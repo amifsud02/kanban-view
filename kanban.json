@@ -1,0 +1,164 @@
+{
+  "events": [
+    {
+      "id": "e1b724c3-9b5f-4b6a-8df0-1e7c39c84349",
+      "status": "In_Progress",
+      "flightPurpose": "Business",
+      "outletId": "out123",
+      "operatorId": "op456",
+      "aircraftId": "ac789",
+      "equipment": "Gulfstream G650",
+      "notes": "VIP client, ensure all services are top-notch",
+      "isLocal": false,
+      "createdAt": "2024-10-01T08:00:00Z",
+      "updatedAt": "2024-10-01T10:30:00Z",
+      "deletedAt": null
+    }
+  ],
+  "flights": [
+    {
+      "id": "f9a12b3c-4d5e-6f7g-8h9i-0j1k2l3m4n5o",
+      "type": "Arrival",
+      "callsign": "N123AB",
+      "qualifier": "Private",
+      "date": "2024-10-02T14:30:00Z",
+      "signature": null,
+      "blocks": "2024-10-02T14:25:00Z",
+      "movement": "2024-10-02T14:35:00Z",
+      "pax": 4,
+      "children": 0,
+      "infants": 0,
+      "pets": 1,
+      "cabinCrew": 1,
+      "cockpitCrew": 2,
+      "equipment": "Gulfstream G650",
+      "notes": "Pet on board, ensure pet relief area is prepared",
+      "eventId": "e1b724c3-9b5f-4b6a-8df0-1e7c39c84349",
+      "parkingId": "park123",
+      "airportId": "apt456"
+    },
+    {
+      "id": "a1b2c3d4-e5f6-7g8h-9i0j-1k2l3m4n5o6p",
+      "type": "Departure",
+      "callsign": "N123AB",
+      "qualifier": "Private",
+      "date": "2024-10-04T10:00:00Z",
+      "signature": null,
+      "blocks": null,
+      "movement": null,
+      "pax": 4,
+      "children": 0,
+      "infants": 0,
+      "pets": 1,
+      "cabinCrew": 1,
+      "cockpitCrew": 2,
+      "equipment": "Gulfstream G650",
+      "notes": "Catering to be delivered 2 hours before departure",
+      "eventId": "e1b724c3-9b5f-4b6a-8df0-1e7c39c84349",
+      "parkingId": "park123",
+      "airportId": "apt456"
+    }
+  ],
+  "eventServices": [
+    {
+      "id": "es2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+      "date": "2024-10-02T15:00:00Z",
+      "comments": "Luggage handling and transportation to hotel",
+      "status": "To_Be_Actioned",
+      "serviceType": "Arrival",
+      "serviceId": "svc456",
+      "eventId": "e1b724c3-9b5f-4b6a-8df0-1e7c39c84349",
+      "flightId": "f9a12b3c-4d5e-6f7g-8h9i-0j1k2l3m4n5o"
+    },
+    {
+      "id": "es1a2b3c-4d5e-6f7g-8h9i-0j1k2l3m4n5o",
+      "date": "2024-10-02T14:00:00Z",
+      "comments": "Meet and greet service for arrival",
+      "status": "Confirmed",
+      "serviceType": "Arrival",
+      "serviceId": "svc123",
+      "eventId": "e1b724c3-9b5f-4b6a-8df0-1e7c39c84349",
+      "flightId": "f9a12b3c-4d5e-6f7g-8h9i-0j1k2l3m4n5o"
+    },
+    {
+      "id": "es3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "date": "2024-10-04T08:00:00Z",
+      "comments": "Catering service for departure",
+      "status": "Awaiting_Confirmation",
+      "serviceType": "Departure",
+      "serviceId": "svc789",
+      "eventId": "e1b724c3-9b5f-4b6a-8df0-1e7c39c84349",
+      "flightId": "a1b2c3d4-e5f6-7g8h-9i0j-1k2l3m4n5o6p"
+    }
+  ],
+  "statusUpdates": [
+    {
+      "id": "su1a2b3c-4d5e-6f7g-8h9i-0j1k2l3m4n5o",
+      "eventServiceId": "es1a2b3c-4d5e-6f7g-8h9i-0j1k2l3m4n5o",
+      "status": "Scheduled",
+      "note": "VIP Meet and Greet service scheduled for arrival",
+      "createdAt": "2024-10-01T10:00:00Z",
+      "createdBy": "user123"
+    },
+    {
+      "id": "su2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+      "eventServiceId": "es1a2b3c-4d5e-6f7g-8h9i-0j1k2l3m4n5o",
+      "status": "In_Progress",
+      "note": "Staff briefed on VIP client requirements",
+      "createdAt": "2024-10-01T14:30:00Z",
+      "createdBy": "user456"
+    },
+    {
+      "id": "su3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "eventServiceId": "es1a2b3c-4d5e-6f7g-8h9i-0j1k2l3m4n5o",
+      "status": "Confirmed",
+      "note": "Confirmed with ground staff, all set for arrival",
+      "createdAt": "2024-10-01T16:30:00Z",
+      "createdBy": "user789"
+    },
+    {
+      "id": "su4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+      "eventServiceId": "es1a2b3c-4d5e-6f7g-8h9i-0j1k2l3m4n5o",
+      "status": "In_Progress",
+      "note": "VIP lounge prepared for client arrival",
+      "createdAt": "2024-10-02T12:00:00Z",
+      "createdBy": "user101"
+    },
+    {
+      "id": "su5e6f7g-8h9i-0j1k-2l3m-4n5o6p7q8r9s",
+      "eventServiceId": "es1a2b3c-4d5e-6f7g-8h9i-0j1k2l3m4n5o",
+      "status": "Completed",
+      "note": "VIP Meet and Greet service successfully delivered",
+      "createdAt": "2024-10-02T15:00:00Z",
+      "createdBy": "user202"
+    },
+    {
+      "id": "su6f7g8h-9i0j-1k2l-3m4n-5o6p7q8r9s0t",
+      "eventServiceId": "es3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "status": "Awaiting_Confirmation",
+      "note": "Catering order placed, waiting for confirmation from provider",
+      "createdAt": "2024-10-03T09:15:00Z",
+      "createdBy": "user303"
+    }
+  ],
+  "services": [
+    {
+      "id": "svc123",
+      "outletId": "out123",
+      "name": "VIP Meet and Greet",
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "svc456",
+      "outletId": "out123",
+      "name": "Luggage Handling and Transportation",
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "svc789",
+      "outletId": "out123",
+      "name": "In-flight Catering",
+      "createdAt": "2024-01-01T00:00:00Z"
+    }
+  ]
+}
