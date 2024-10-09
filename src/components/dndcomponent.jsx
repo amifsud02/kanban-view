@@ -28,175 +28,155 @@ const DndComponent = () => {
     }));
   };
 
+  const filterEmptyComponents = (data) => {
+    data.forEach(section => {
+      section.components = section.components.filter(component => {
+        const isEmpty = !component?.ArrivalServices?.length &&
+                        !component?.DepartureServices?.length &&
+                        !component?.EventServices?.length;
+        return !isEmpty;
+      });
+    });
+  };
+  
+  const isInvalidMove = (sourceFlightIndex, destFlightIndex, serviceType, destServiceType, destList, sourceList) => {
+    // console.log("sourceFlightIndex",sourceFlightIndex)
+    // console.log("destFlightIndex",destFlightIndex)
+    
+    if ((destList?.id === 2  && destServiceType !== "All" && serviceType !== destServiceType) ||
+        (destList?.id !== 2 &&  (serviceType!=="EventServices" ||  destServiceType!=="EventServices") &&(sourceFlightIndex !== destFlightIndex || serviceType !== destServiceType))) {
+      console.error("Moving the Whole Event Block Should NOT be allowed.");
+      return true;
+    }
+
+    // console.log('sourceFlightIndex',sourceFlightIndex)
+    // console.log('destFlightIndex',destFlightIndex)
+
+    if(sourceList?.id===destList?.id && destServiceType=="All")
+    {
+      console.error("Cannot create Event Card.")
+      return true;
+    }
+  
+    if (!sourceList || !destList) {
+      console.error("Source or destination not found");
+      return true;
+    }
+  
+    if ((sourceList?.id === 0 || destList?.id === 0) && sourceFlightIndex !== destFlightIndex) {
+      console.error("All Open Flights is Read only.");
+      return true;
+    }
+  
+    return false;
+  };
+  
+  const copyServiceToDestination = (copiedComponent, serviceType, serviceID) => {
+    switch (serviceType) {
+      case "ArrivalServices":
+        copiedComponent.ArrivalServices = copiedComponent.ArrivalServices.filter(service => service.id === serviceID).map(service => ({
+          ...service, id: uuidv4()
+        }));
+        copiedComponent.EventServices = [];
+        copiedComponent.DepartureServices = [];
+        break;
+  
+      case "EventServices":
+        copiedComponent.EventServices = copiedComponent.EventServices.filter(service => service.id === serviceID).map(service => ({
+          ...service, id: uuidv4()
+        }));
+        copiedComponent.ArrivalServices = [];
+        copiedComponent.DepartureServices = [];
+        break;
+  
+      case "DepartureServices":
+        copiedComponent.DepartureServices = copiedComponent.DepartureServices.filter(service => service.id === serviceID).map(service => ({
+          ...service, id: uuidv4()
+        }));
+        copiedComponent.EventServices = [];
+        copiedComponent.ArrivalServices = [];
+        break;
+    }
+  };
+  
   const onDragEnd = (result) => {
     try {
       const { source, destination, type } = result;
       if (!destination) return;
+  
       const newData = [...JSON.parse(JSON.stringify(data))];
-
+  
       if (type === "FLIGHT") {
-        if (source.droppableId !== destination.droppableId) {
-          const oldDroppableIndex = newData.findIndex(
-            (x) => x.id == source.droppableId.split("droppable")[1]
-          );
-          const newDroppableIndex = newData.findIndex(
-            (x) => x.id == destination.droppableId.split("droppable")[1]
-          );
-          const [item] = newData[oldDroppableIndex].components.splice(
-            source.index,
-            1
-          );
-
-          // console.log('oldDroppableIndex', oldDroppableIndex)
-          // console.log('newDroppableIndex', newDroppableIndex)
-          if (oldDroppableIndex == 0 || newDroppableIndex == 0) {
-            console.error("All Open Flights is Read only.")
-            return
-          }
-
-          if(newDroppableIndex==2)
-          {
-            console.error("Cannot move flight in Awaiting Confirmation, Only service can move.")
-            return
-          }
-
-
-          newData[newDroppableIndex].components.splice(
-            destination.index,
-            0,
-            item
-          );
-          setData(newData);
-        } else {
-          const droppableIndex = newData.findIndex(
-            (x) => x.id == source.droppableId.split("droppable")[1]
-          );
-          const [item] = newData[droppableIndex].components.splice(
-            source.index,
-            1
-          );
-          newData[droppableIndex].components.splice(destination.index, 0, item);
-
-          setData(newData);
-        }
-      } else if (type === "SERVICE") {
-        const [sourceFlightIndex, serviceType, seviceID] = source.droppableId.split("==");
-        const [destFlightIndex, destServiceType, DesColumnName] = destination.droppableId.split("==")
-
-        if (destServiceType == "All") {
-          newData.map((val) => {
-            if (val.title === DesColumnName && val.components.length === 0) {
-              val.components.push({
-                id: destFlightIndex
-              });
-            }
-          });
-        } else if (
-          ((serviceType == "ArrivalServices" ||
-            serviceType == "DepartureServices" || serviceType =="EventServices") &&
-            sourceFlightIndex !== destFlightIndex) ||
-          serviceType !== destServiceType
-        ) {
-          console.error("Moving the Whole Event Block Should NOT be allowed.");
+        const [sourceIndex, destIndex] = [source.droppableId, destination.droppableId].map(id => id.split("droppable")[1]);
+        const [oldIdx, newIdx] = [sourceIndex, destIndex].map(id => newData.findIndex(x => x.id == id));
+        const [item] = newData[oldIdx].components.splice(source.index, 1);
+  
+        if (oldIdx === 0 || newIdx === 0) {
+          console.error("All Open Flights is Read only.");
           return;
         }
-        const sourceList = newData.find((list) =>
-          list.components.some((comp) => comp.id === sourceFlightIndex)
-        );
-
-        const destList = newData.find((list) =>
-          list.components.some((comp) => comp.id === destFlightIndex)
-        );
-
-        if (!sourceList || !destList) {
-          console.error("Source or destination not found");
-          return;
-        }
-
-        const sourceFlight = sourceList.components.find(
-          (comp) => comp.id === sourceFlightIndex
-        );
-        const destFlight = destList.components.find(
-          (comp) => comp.id === destFlightIndex
-        );
-
-        
-        if(sourceList?.id == 0 || destList?.id == 0)
-          {
-            if (sourceFlight?.id !== destFlight?.id) {
-              console.error("All Open Flights is Read only.")
+  
+        if(newIdx==2)//||newIdx==3 || newIdx==4
+        {
+            if(newIdx!==oldIdx)
+            {
+              console.error("Cannot move flight in Awaiting Confirmation, Only service can move.");
               return;
             }
         }
-
+        newData[newIdx].components.splice(destination.index, 0, item);
+        setData(newData);
+      } 
+      else if (type === "SERVICE") {
+        const [sourceFlightIndex, serviceType, serviceID] = source.droppableId.split("==");
+        const [destFlightIndex, destServiceType, DesColumnName] = destination.droppableId.split("==");
+  
         if (destServiceType === "All") {
-          const copiedComponent = { ...sourceFlight };
-
-          if (serviceType === "ArrivalServices") {
-            copiedComponent.ArrivalServices = copiedComponent.ArrivalServices.filter(service => service?.id == seviceID).map(service => ({
-              ...service,
-              id: uuidv4(),
-            }));
-            copiedComponent.EventServices = [];
-            copiedComponent.DepartureServices = [];
-          }
-
-          else if (serviceType === "EventServices") {
-            copiedComponent.EventServices = copiedComponent.EventServices.filter(service => service?.id == seviceID).map(service => ({
-              ...service,
-              id: uuidv4(),
-            }));
-            copiedComponent.ArrivalServices = [];
-            copiedComponent.DepartureServices = [];
-          }
-
-          if (serviceType === "DepartureServices") {
-            copiedComponent.DepartureServices = copiedComponent.DepartureServices.filter(service => service?.id == seviceID).map(service => ({
-              ...service,
-              id: uuidv4(),
-            }));
-            copiedComponent.EventServices = [];
-            copiedComponent.ArrivalServices = [];
-          }
-          copiedComponent.id = destFlightIndex;
-
-          const matchingComponent = destList.components.find(
-            (comp) => comp.id === destFlightIndex
-          );
-
-          if (matchingComponent) {
-            Object.assign(matchingComponent, copiedComponent);
-          }
+          newData.forEach(val => {
+            // if (val.title === DesColumnName && val.components.length === 0) {
+            if (val.title === DesColumnName) {
+              val.components.push({ id: destFlightIndex });
+            }
+          });
+        }
+  
+        const sourceList = newData.find(list => list.components.some(comp => comp.id === sourceFlightIndex));
+        const destList = newData.find(list => list.components.some(comp => comp.id === destFlightIndex));
+  
+        if (isInvalidMove(sourceFlightIndex, destFlightIndex, serviceType, destServiceType, destList, sourceList)) return;
+  
+        const sourceFlight = sourceList.components.find(comp => comp.id === sourceFlightIndex);
+        const destFlight = destList.components.find(comp => comp.id === destFlightIndex);
+  
+        if (destServiceType === "All") {
+          const copiedComponent = { ...sourceFlight, id: destFlightIndex };
+          copyServiceToDestination(copiedComponent, serviceType, serviceID);
+          Object.assign(destFlight, copiedComponent);
+          sourceFlight[serviceType].splice(source.index, 1);
         } else {
-          let sourceServices = sourceFlight[serviceType];
-          let destServices = destFlight[destServiceType];
-
-          if (!sourceServices || !destServices) {
-            console.error("Source or destination services not found");
-            return;
-          }
-          const [movedService] = sourceServices.splice(source.index, 1);
-          const exist = destServices.some((item) => item?.name === movedService?.name);
-
-          if (exist) {
+          const [movedService] = sourceFlight[serviceType].splice(source.index, 1);
+          if (destFlight[destServiceType].some(item => item.name === movedService.name)) {
             console.error("This Service already exists");
             return;
           }
-
-          destServices.splice(destination.index, 0, movedService);
+          destFlight[destServiceType].splice(destination.index, 0, movedService);
         }
-        setDroppableId(`${uuidv4()}==All==Awaiting Confirmation`);
-        setConfirmdroppableId(`${uuidv4()}==All==Confirmed`);
-        setCompletedroppableId(`${uuidv4()}==All==Completed`);
-        setData(newData);
       }
+  
+      filterEmptyComponents(newData);
+      
+      setDroppableId(`${uuidv4()}==All==Awaiting Confirmation`);
+      setConfirmdroppableId(`${uuidv4()}==All==Confirmed`);
+      setCompletedroppableId(`${uuidv4()}==All==Completed`);
+      setData(newData);
+  
     } catch (error) {
-      console.log('Error:--', error)
+      console.log('Error:--', error);
     }
   };
+  
 
-
-  useEffect(() => {
+ useEffect(() => {
     setData(cardsData);
   }, []);
 
@@ -223,7 +203,7 @@ const DndComponent = () => {
                 {(provided) => (
                   <div className="w-full bg-white h-full" {...provided.droppableProps} ref={provided.innerRef}>
                     <div className="bg-[#f8f8f8] p-1.5 flex gap-2 flex-col mt-3 rounded-md w-full h-full">
-                      {val.components.length > 0 ? (
+                      {val.components.length > 0 && (
                         val.components.map((component, index) => (
                           <Draggable key={component?.id} draggableId={component?.id.toString()} index={index} type="FLIGHT">
                             {(provided) => (
@@ -304,7 +284,8 @@ const DndComponent = () => {
                                                 )}
                                               </div>
                                             ))
-                                          ) : component?.EventServices?.length == 0 && (
+                                          ) : 
+                                          (
                                             <Droppable droppableId={`${component.id}==${serviceType}`} type="SERVICE">
                                               {(provided) => (
                                                 <div
@@ -316,7 +297,8 @@ const DndComponent = () => {
                                                 </div>
                                               )}
                                             </Droppable>
-                                          )}
+                                          )
+                                        }
                                         </div>
                                       </div>
                                     ))}
@@ -328,10 +310,10 @@ const DndComponent = () => {
                             )}
                           </Draggable>
                         ))
-                      ) : (
-
-                        
-                      (val?.title=="Awaiting Confirmation" && <Droppable droppableId={droppableId} type="SERVICE">
+                      ) 
+                      }
+                      {
+                          val?.title=="Awaiting Confirmation" && (  <Droppable droppableId={droppableId} type="SERVICE">
                             {(provided) => (
                               <div
                                 ref={provided.innerRef}
@@ -341,31 +323,8 @@ const DndComponent = () => {
                                 {provided.placeholder}
                               </div>
                             )}
-                          </Droppable> ) || 
-                          (val?.title=="Confirmed" && <Droppable droppableId={ConfirmdroppableId} type="SERVICE">
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.droppableProps}
-                                className="bg-[#f8f8f8] h-full border-dashed border-2 border-[#ccc] p-4 rounded-md text-center"
-                              >
-                                {provided.placeholder}
-                              </div>
-                            )}
-                          </Droppable> ) ||
-                          (val?.title=="Completed" && <Droppable droppableId={CompletedroppableId} type="SERVICE">
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.droppableProps}
-                                className="bg-[#f8f8f8] h-full border-dashed border-2 border-[#ccc] p-4 rounded-md text-center"
-                              >
-                                {provided.placeholder}
-                              </div>
-                            )}
-                          </Droppable> )
-                      )}
-                    
+                          </Droppable> ) 
+                      }
                     </div>
                     {provided.placeholder}
                   </div>

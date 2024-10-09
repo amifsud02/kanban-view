@@ -6,29 +6,69 @@ export const cardsData = [
     components: [
       {
         id: uuidv4(),
+        flightType: 'Open',
+
         FilghtNumber: 'F-784',
         ArrivalDate: "29 Nov",
         DepartureDate: "30 Nov",
         ArrivalTitle: "Arrival services",
         ArrivalServices: [
-          { id: uuidv4(), name: 'Foods' },
-          { id: uuidv4(), name: 'Beverages' },
-          { id: uuidv4(), name: 'Towing' },
-          { id: uuidv4(), name: 'Parking' },
-          { id: uuidv4(), name: 'Slot' },
+          {
+            id: uuidv4(), name: 'Foods', status: "In progress"
+          },
+          {
+            id: uuidv4(), name: 'Beverages', status: "In progress"
+          },
+          {
+            id: uuidv4(), name: 'Towing'
+            , status: "Confirmed"
+          },
+          {
+            id: uuidv4(), name: 'Parking'
+            , status: "Confirmed"
+          },
         ],
         EventServices: [
-          { id: uuidv4(), name: 'Event 1' },
-          { id: uuidv4(), name: 'Event 2' },
-          { id: uuidv4(), name: 'Event 3' }
+          { id: uuidv4(), name: 'Event 1', status: "In progress" },
+          { id: uuidv4(), name: 'Event 2', status: "Confirmed" },
         ],
         DepartureTitle: "Departure services",
         DepartureServices: [
-          { id: uuidv4(), name: 'Services 1' },
-          { id: uuidv4(), name: 'Services 2' },
-          { id: uuidv4(), name: 'PPR' }
+          { id: uuidv4(), name: 'Services 1', status: "In progress" },
+          { id: uuidv4(), name: 'Services 2', status: "Confirmed" },
         ]
       },
+
+      {
+        id: uuidv4(),
+        FilghtNumber: 'F-333',
+        ArrivalDate: "29 Nov",
+        flightType: 'Open',
+
+        DepartureDate: "30 Nov",
+        ArrivalTitle: "Arrival services",
+        EventServices: [
+          { id: uuidv4(), name: 'Slot', status: "In progress" },
+          { id: uuidv4(), name: 'Drinks', status: "Confirmed" },
+        ],
+        ArrivalServices: [
+          { id: uuidv4(), name: 'Food', status: "In progress" },
+          { id: uuidv4(), name: 'Beverages', status: "Confirmed" },
+        ],
+        DepartureTitle: "Departure services",
+        DepartureServices: [
+          { id: uuidv4(), name: 'Services 1', status: "In progress" },
+          { id: uuidv4(), name: 'PPR', status: "Confirmed" }
+        ]
+      },
+     
+    ]
+  },
+
+  {
+    id: 1,
+    title: "To Be Actioned",
+    components: [
       {
         id: uuidv4(),
         FilghtNumber: 'F-222EN',
@@ -36,37 +76,13 @@ export const cardsData = [
         DepartureDate: "22 Oct",
         ArrivalTitle: "Arrival services",
         ArrivalServices: [],
-        EventServices:[],
+        EventServices: [
+          // { id: uuidv4(), name: 'Event 1' },
+          { id: uuidv4(), name: 'Event 2' },
+          { id: uuidv4(), name: 'Event 3' }
+        ],
         DepartureTitle: "Departure services",
         DepartureServices: [],
-      },
-    ]
-  },
-  
-  {
-    id: 1,
-    title: "To Be Actioned",
-    components: [
-      {
-        id: uuidv4(),
-        flightType:'Open',
-        FilghtNumber: 'F-333',
-        ArrivalDate: "29 Nov",
-        DepartureDate: "30 Nov",
-        ArrivalTitle: "Arrival services",
-        EventServices:[
-          { id: uuidv4(), name: 'Slot',status:"In progress" },
-          { id: uuidv4(), name: 'Drinks' ,status:"Confirmed"},
-        ],
-        ArrivalServices: [
-          { id: uuidv4(), name: 'Food',status:"In progress" },
-          { id: uuidv4(), name: 'Beverages' ,status:"Confirmed"},
-        ],
-        DepartureTitle: "Departure services",
-        DepartureServices: [
-          { id: uuidv4(), name: 'Services 1',status:"In progress" },
-          { id: uuidv4(), name: 'PPR' ,status:"Confirmed"}
-        ]
       },
       {
         id: uuidv4(),
@@ -92,7 +108,7 @@ export const cardsData = [
     id: 2,
     title: "Awaiting Confirmation",
     components: [
-      
+
     ]
   },
   {
@@ -105,7 +121,7 @@ export const cardsData = [
         ArrivalDate: "4 Oct",
         DepartureDate: "7 Oct",
         ArrivalTitle: "Arrival services",
-        EventServices:[],
+        EventServices: [],
         ArrivalServices: [
           { id: uuidv4(), name: 'Kettle' },
           { id: uuidv4(), name: 'Transport' },
@@ -131,7 +147,7 @@ export const cardsData = [
         ArrivalServices: [
           { id: uuidv4(), name: 'TV' }
         ],
-        EventServices:[],
+        EventServices: [],
         DepartureTitle: "Departure services",
         DepartureServices: []
       },
@@ -155,7 +171,7 @@ export const cardsData = [
           { id: uuidv4(), name: 'Slot' },
           { id: uuidv4(), name: 'PPR' }
         ],
-        EventServices:[
+        EventServices: [
           { id: uuidv4(), name: 'Event 4' },
 
         ],
@@ -182,7 +198,7 @@ export const cardsData = [
           { id: uuidv4(), name: 'Parking' },
           { id: uuidv4(), name: 'Slot' }
         ],
-        EventServices:[],
+        EventServices: [],
         DepartureTitle: "Departure services",
         DepartureServices: [
           { id: uuidv4(), name: 'Food' },
